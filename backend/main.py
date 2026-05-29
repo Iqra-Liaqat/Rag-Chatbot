@@ -14,7 +14,7 @@ load_dotenv()
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, HTMLResponse
 from pydantic import BaseModel
 
 from rag_engine import RAGEngine
@@ -22,6 +22,16 @@ from rag_engine import RAGEngine
 
 # ── App setup ─────────────────────────────────────────────────────────────
 app = FastAPI(title="RAG Chatbot API", version="1.0.0")
+
+@app.get("/", response_class=HTMLResponse)
+async def read_root():
+    # Looks up one level from 'backend' folder to find index.html in the root
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    root_dir = os.path.dirname(current_dir)
+    html_path = os.path.join(root_dir, "index.html")
+    
+    with open(html_path, "r", encoding="utf-8") as f:
+        return f.read()
 
 app.add_middleware(
     CORSMiddleware,
