@@ -1,0 +1,21 @@
+﻿# Environment
+backend/.env
+.env
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+backend/rag-env/
+rag-env/
+
+# Vector store (auto-generated, don't push)
+backend/vector_store/
+vector_store/
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
