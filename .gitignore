@@ -9,13 +9,13 @@ __pycache__/
 backend/rag-env/
 rag-env/
 
-# Vector store (auto-generated, don't push)
+# Vector store & Model weights (auto-generated, don't push)
 backend/vector_store/
 vector_store/
+*.pkl
+*.faiss
 
-# VS Code
+# IDE and OS config
 .vscode/
-
-# OS
 .DS_Store
 Thumbs.db
