@@ -138,10 +138,10 @@ def clear_index():
 
 
 # ── Serve frontend (optional) ──────────────────────────────────────────────
-frontend_dir = Path(__file__).parent.parent / "frontend"
-if frontend_dir.exists():
+#frontend_dir = Path(__file__).parent.parent / "frontend"
+#if frontend_dir.exists():
     # FIX 4: mount at "/" so index.html is reachable at root too
-    app.mount("/app", StaticFiles(directory=str(frontend_dir), html=True), name="frontend")
+ #   app.mount("/app", StaticFiles(directory=str(frontend_dir), html=True), name="frontend")
 
     @app.get("/ui", include_in_schema=False)
     def serve_ui():
