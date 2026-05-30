@@ -112,15 +112,31 @@ def clear_index():
     return {"status": "success", "message": "Knowledge base cleared."}
 
 
-# ── Serve frontend ─────────────────────────────────────────────────────────
-frontend_dir = Path(__file__).parent.parent / "frontend"
-if frontend_dir.exists():
-    app.mount("/app", StaticFiles(directory=str(frontend_dir), html=True), name="frontend")
-    print(f"[INFO] Frontend served at /app from {frontend_dir}")
-else:
-    print(f"[WARNING] Frontend not found at {frontend_dir} — UI will not be available")
+# ── Serve frontend (embedded) ──────────────────────────────────────────────
+import importlib.resources, html as _html
 
+FRONTEND_HTML = None
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+def _load_frontend():
+    global FRONTEND_HTML
+    # Try relative path first (local dev)
+    for candidate in [
+        Path(__file__).parent.parent / "frontend" / "index.html",
+        Path(__file__).parent / "index.html",
+        Path("/app/frontend/index.html"),
+    ]:
+        if candidate.exists():
+            FRONTEND_HTML = candidate.read_text(encoding="utf-8")
+            print(f"[INFO] Frontend loaded from {candidate}")
+            return
+    print("[WARNING] index.html not found — serving API only")
+
+_load_frontend()
+
+@app.get("/app", include_in_schema=False)
+@app.get("/ui", include_in_schema=False)
+def serve_ui():
+    if FRONTEND_HTML:
+        from fastapi.responses import HTMLResponse
+        return HTMLResponse(content=FRONTEND_HTML)
+    raise HTTPException(404, "Frontend not found. Place index.html next to main.py or in frontend/")
